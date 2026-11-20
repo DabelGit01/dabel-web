@@ -1,0 +1,190 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/postgres"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  company   String?
+  subject   String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Offer {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  category    String
+  status      String
+  description String
+  subTopic    String   @default("") @db.Text
+  features    Json
+  price       Decimal?
+  purchaseUrl String?
+  specifications Json?
+  tags        String[]
+  imageUrl    String?
+  galleryUrls String[]
+  gallery     Json?    @default("[]")
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  title     String
+  bio       String?
+  imageUrl  String?
+  linkedin  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model SiteMeta {
+  id              String   @id @default(cuid())
+  welcomeSubtitle String   @default("Who We Are")
+  welcomeTitle    String   @default("Driving Economic and Technological Progress")
+  welcomeBody1    String   @db.Text
+  welcomeBody2    String   @db.Text
+  aboutHistory    String   @default("") @db.Text
+  founderName     String   @default("")
+  founderRole     String   @default("Founder & Managing Director")
+  founderBio      String   @default("") @db.Text
+  founderImageUrl String?
+  aboutHeader     String   @default("Integrated marine logistics, procurement & environmental solutions") @db.Text
+  aboutBody       String   @default("Dabel Resources Ventures Limited is a leading provider of integrated marine logistics, procurement, and environmental solutions, driving economic and technological progress through innovative and client-focused services.") @db.Text
+  aboutMission    String   @default("To execute services promptly and optimally, aligning with industry standards and client requirements.") @db.Text
+  aboutVision     String   @default("To ensure safety and peace of mind through our experience and professionalism in an aesthetically driven environment.") @db.Text
+  enquiryText     String   @default("Talk to our team about vessels, environmental response or supply for your next operation — we respond promptly.") @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Certification {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  year        String
+  imageUrl    String?
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Office {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  email     String
+  phone     String
+  order     Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SocialLink {
+  id        String   @id @default(cuid())
+  platform  String   // e.g. "facebook", "linkedin", "twitter", "instagram"
+  url       String
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BlogCategory {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  posts     BlogPost[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model BlogPost {
+  id          String       @id @default(cuid())
+  title       String
+  content     String       @db.Text
+  imageUrl    String?
+  galleryUrls String[]
+  gallery     Json?        @default("[]")
+  categoryId  String
+  category    BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  published   Boolean      @default(true)
+  authorName  String       @default("Dabel Team")
+  readTime    String       @default("5 min read")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model ContactDetail {
+  id        String   @id @default(cuid())
+  platform  String   // e.g. "mail", "phone", "linkedin"
+  label     String   // e.g. "BY EMAIL", "Chat Us on WhatsApp", "Visit Us"
+  value     String   // e.g. "info@dabel.ng"
+  url       String   // e.g. "mailto:info@dabel.ng"
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Admin {
+  id          String   @id @default(cuid())
+  fullName    String
+  email       String   @unique
+  password    String
+  permissions String[] @default([]) // Array of paths, e.g. ["/admin/messages"]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// Admin "Devices" module (moved from MongoDB to Postgres).
+/// sensors:   [{ id, name, topic, unit?, ui: "value" | "badge" }]
+/// actuators: [{ id, name, topic, ui: "button" | "switch" | "toggle", payload: "SWITCH" | "TOGGLE" | "ON" | "OFF" }]
+/// Shapes are validated with zod in app/api/admin/devices.
+model Device {
+  id           String   @id @default(cuid())
+  deviceName   String
+  deviceId     String   @unique
+  deviceType   String
+  version      String
+  serialNumber String   @unique
+  email        String
+  sensors      Json     @default("[]")
+  actuators    Json     @default("[]")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([deviceType, deviceId])
+}
+
+model Permission {
+  id        String   @id @default(cuid())
+  name      String   @unique // e.g. "Messages"
+  path      String   @unique // e.g. "/admin/messages"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,139 @@
+/* ==================================================================
+   Admin theme layer
+   The admin screens were inherited from Stalan with hard-coded light
+   colours. Rather than rewrite ~8k lines, this layer re-points the
+   most-used colour utilities at the Dabel tokens, so the admin follows
+   light / dark mode. Scoped to body.admin-scope (set by <AdminScope/>)
+   so it also reaches portaled dialogs, menus and toasts.
+   Selectors use [class~="…"] to match exact utility tokens.
+   ================================================================== */
+
+.admin-scope {
+	/* Indigo accent: white text on it passes AA, unlike cyan */
+	--color-accent: #3d3d9a;
+}
+.dark .admin-scope {
+	--color-accent: #5b5fd6;
+}
+
+/* Brand-cyan focus rings instead of black */
+.admin-scope [class~="focus:border-[#0A0A0A]"]:focus,
+.admin-scope [class~="focus:border-[#001a3d]"]:focus {
+	border-color: var(--brand);
+}
+
+/* ---------------- dark-mode remap ---------------- */
+
+/* surfaces */
+.dark .admin-scope [class~="bg-white"],
+.dark .admin-scope [class~="bg-[#FAFAFA]"] {
+	background-color: var(--surface);
+}
+.dark .admin-scope [class~="bg-[#F2F2F2]"],
+.dark .admin-scope [class~="bg-slate-50"],
+.dark .admin-scope [class~="bg-slate-100"],
+.dark .admin-scope [class~="bg-gray-100"],
+.dark .admin-scope [class~="bg-black/5"],
+.dark .admin-scope [class~="bg-black/10"],
+.dark .admin-scope [class~="bg-black/12"],
+.dark .admin-scope [class~="bg-black/15"] {
+	background-color: var(--surface-2);
+}
+.dark .admin-scope [class~="bg-black/1"],
+.dark .admin-scope [class~="bg-black/2"],
+.dark .admin-scope [class~="bg-black/[0.01]"],
+.dark .admin-scope [class~="bg-black/[0.02]"],
+.dark .admin-scope [class~="bg-black/[0.03]"],
+.dark .admin-scope [class~="bg-black/[0.04]"] {
+	background-color: rgb(255 255 255 / 0.03);
+}
+/* "black" primary buttons become light-on-dark */
+.dark .admin-scope [class~="bg-[#0A0A0A]"]:not(.admin-sidebar),
+.dark .admin-scope [class~="bg-black"],
+.dark .admin-scope [class~="bg-[#001a3d]"] {
+	background-color: #eef0fa;
+	color: #11142b;
+}
+.dark .admin-scope [class~="bg-[#0A0A0A]"]:not(.admin-sidebar) svg,
+.dark .admin-scope [class~="bg-black"] svg {
+	color: inherit;
+}
+
+/* hovers */
+.dark .admin-scope [class~="hover:bg-black/5"]:hover,
+.dark .admin-scope [class~="hover:bg-slate-100/50"]:hover,
+.dark .admin-scope [class~="hover:bg-gray-200"]:hover {
+	background-color: rgb(255 255 255 / 0.06);
+}
+.dark .admin-scope [class~="hover:bg-black/1"]:hover,
+.dark .admin-scope [class~="hover:bg-black/[0.01]"]:hover,
+.dark .admin-scope [class~="hover:bg-black/[0.02]"]:hover {
+	background-color: rgb(255 255 255 / 0.04);
+}
+.dark .admin-scope [class~="hover:bg-white"]:hover {
+	background-color: var(--surface-2);
+}
+.dark .admin-scope [class~="hover:bg-black"]:hover {
+	background-color: #ffffff;
+	color: #11142b;
+}
+
+/* text */
+.dark .admin-scope [class~="text-[#0A0A0A]"],
+.dark .admin-scope [class~="text-black"],
+.dark .admin-scope [class~="text-[#001a3d]"],
+.dark .admin-scope [class~="hover:text-black"]:hover,
+.dark .admin-scope [class~="hover:text-[#0A0A0A]"]:hover {
+	color: var(--fg);
+}
+.dark .admin-scope [class~="text-black/70"],
+.dark .admin-scope [class~="text-black/60"],
+.dark .admin-scope [class~="text-black/55"],
+.dark .admin-scope [class~="hover:text-black/60"]:hover {
+	color: color-mix(in srgb, var(--fg) 72%, transparent);
+}
+.dark .admin-scope [class~="text-black/50"],
+.dark .admin-scope [class~="text-black/45"],
+.dark .admin-scope [class~="text-black/40"],
+.dark .admin-scope [class~="text-gray-500"],
+.dark .admin-scope [class~="text-gray-400"] {
+	color: var(--fg-muted);
+}
+.dark .admin-scope [class~="text-black/35"],
+.dark .admin-scope [class~="text-black/30"],
+.dark .admin-scope [class~="text-black/25"] {
+	color: color-mix(in srgb, var(--fg) 48%, transparent);
+}
+.dark .admin-scope [class~="text-black/20"],
+.dark .admin-scope [class~="text-black/15"] {
+	color: color-mix(in srgb, var(--fg) 30%, transparent);
+}
+.dark .admin-scope [class~="placeholder:text-gray-400"]::placeholder,
+.dark .admin-scope [class~="placeholder:text-black/30"]::placeholder {
+	color: color-mix(in srgb, var(--fg) 40%, transparent);
+}
+
+/* borders */
+.dark .admin-scope [class~="border-black/5"],
+.dark .admin-scope [class~="border-black/8"],
+.dark .admin-scope [class~="border-black/10"],
+.dark .admin-scope [class~="border-black/20"],
+.dark .admin-scope [class~="border-gray-300"],
+.dark .admin-scope [class~="divide-black/6"] > * + * {
+	border-color: var(--line);
+}
+.dark .admin-scope [class~="hover:border-black/8"]:hover,
+.dark .admin-scope [class~="hover:border-black/10"]:hover,
+.dark .admin-scope [class~="hover:border-black/25"]:hover,
+.dark .admin-scope [class~="hover:border-black"]:hover,
+.dark .admin-scope [class~="hover:border-[#0A0A0A]"]:hover,
+.dark .admin-scope [class~="border-[#001a3d]"] {
+	border-color: color-mix(in srgb, var(--fg) 45%, transparent);
+}
+
+/* native form controls */
+.dark .admin-scope input,
+.dark .admin-scope textarea,
+.dark .admin-scope select {
+	color-scheme: dark;
+}
