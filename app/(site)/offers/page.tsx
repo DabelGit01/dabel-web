@@ -1,19 +1,18 @@
-import type { Metadata } from "next";
 import { ServicesList } from "@/components/services/ServicesList";
 import { OfficesSection } from "@/components/site/OfficesSection";
 import { PageHero } from "@/components/site/primitives";
 import { getContent } from "@/lib/public-data";
+import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-	title: "Offers",
-	description:
-		"Marine logistics in Port Harcourt: vessel management, chartering, inter-ship agency, port services and cargo transport for offshore oil & gas — plus procurement and consultancy.",
-};
+export function generateMetadata() {
+	return pageMetadata("offers");
+}
 
 export default async function OffersPage() {
-	const c = (await getContent()).offers;
+	const content = await getContent();
+	const c = content.offers;
 	return (
 		<>
 			<PageHero
@@ -22,7 +21,7 @@ export default async function OffersPage() {
 				accent={c.accent}
 				body={c.body}
 				image={c.image}
-				crumbs={[{ label: "Home", href: "/" }, { label: "Offers" }]}
+				crumbs={[{ label: content.nav.home, href: "/" }, { label: content.nav.offers }]}
 			/>
 			<ServicesList />
 			<OfficesSection />

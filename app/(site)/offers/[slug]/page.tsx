@@ -69,7 +69,7 @@ export default async function ServiceDetailPage({ params }: Props) {
 				title={offer.name}
 				body={offer.subTopic || undefined}
 				image={offer.imageUrl || "/images/tanker.jpg"}
-				crumbs={[{ label: "Home", href: "/" }, { label: "Offers", href: "/offers" }, { label: offer.name }]}
+				crumbs={[{ label: content.nav.home, href: "/" }, { label: content.nav.offers, href: "/offers" }, { label: offer.name }]}
 			/>
 
 			<section className="bg-bg py-20 sm:py-28">

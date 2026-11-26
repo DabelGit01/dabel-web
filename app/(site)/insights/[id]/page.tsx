@@ -7,6 +7,7 @@ import { ShareButton } from "@/components/insights/ShareButton";
 import { Gallery } from "@/components/site/Gallery";
 import { PageHero } from "@/components/site/primitives";
 import { prisma } from "@/lib/prisma";
+import { getContent } from "@/lib/public-data";
 import { type GalleryImage, excerpt, formatDate } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -54,6 +55,7 @@ export default async function InsightPage({ params }: Props) {
 		})
 		.catch(() => []);
 
+	const nav = (await getContent()).nav;
 	const gallery = (Array.isArray(post.gallery) ? post.gallery : []) as unknown as GalleryImage[];
 	const galleryAll = gallery.length > 0 ? gallery : post.galleryUrls.map((url) => ({ url, title: "" }));
 	const created = post.createdAt.toISOString();
@@ -64,7 +66,7 @@ export default async function InsightPage({ params }: Props) {
 				eyebrow={post.category?.name ?? "Insight"}
 				title={post.title}
 				image={post.imageUrl || "/images/port-traffic.jpg"}
-				crumbs={[{ label: "Home", href: "/" }, { label: "Insights", href: "/insights" }, { label: "Article" }]}
+				crumbs={[{ label: nav.home, href: "/" }, { label: nav.insights, href: "/insights" }, { label: "Article" }]}
 			/>
 
 			<article className="bg-bg py-16 sm:py-24">

@@ -2,6 +2,7 @@
 
 import { createContext, useContext } from "react";
 import { type Content, mergeContent, type SectionKey } from "@/lib/content";
+import { NAV_LINKS } from "@/lib/site";
 
 const ContentContext = createContext<Content>(mergeContent([]));
 
@@ -13,4 +14,10 @@ export function ContentProvider({ value, children }: { value: Content; children:
 /** Editable text for one section, e.g. `const c = useContent("homeOffers")`. */
 export function useContent<K extends SectionKey>(section: K): Content[K] {
 	return useContext(ContentContext)[section];
+}
+
+/** Menu links with admin-edited labels. */
+export function useNavLinks() {
+	const nav = useContent("nav");
+	return NAV_LINKS.map((l) => ({ ...l, label: nav[l.key] || l.label }));
 }

@@ -33,6 +33,35 @@ export const CONTENT_DEFAULTS = {
 		navCtaLabel: "Get a quote",
 		copyright: "Dabel Resources Ventures Limited. RC 1142506.",
 	},
+	nav: {
+		home: "Home",
+		about: "About",
+		offers: "Offers",
+		insights: "Insights",
+		contact: "Contact",
+		footerCompanyTitle: "Company",
+		footerOffersTitle: "Offers",
+	},
+	seo: {
+		siteTitle: "Dabel Resources | Marine Logistics, Vessel Management & Chartering in Port Harcourt",
+		titleSuffix: "Dabel Resources",
+		description:
+			"Dabel Resources Ventures Limited provides marine logistics in Rivers State, Nigeria — vessel management, chartering, inter-ship agency, port services and cargo transport for offshore oil & gas, plus marine procurement and consultancy. Since 2013.",
+		keywords:
+			"Dabel Resources, marine logistics Nigeria, marine logistics Port Harcourt, vessel management Nigeria, vessel chartering Port Harcourt, inter-ship agency, port services Rivers State, cargo transport Niger Delta, offshore oil and gas logistics, tugboat and barge services, marine vessel supply, oil and gas procurement",
+		shareImage: "/images/tug-barge.jpg",
+		aboutTitle: "About Us",
+		aboutDescription:
+			"Founded in 2013 in Rivers State, Dabel Resources Ventures Limited delivers marine logistics, procurement and consultancy to the energy and maritime sectors.",
+		offersTitle: "Offers",
+		offersDescription:
+			"Marine logistics in Port Harcourt: vessel management, chartering, inter-ship agency, port services and cargo transport for offshore oil & gas — plus procurement and consultancy.",
+		insightsTitle: "Insights",
+		insightsDescription: "News, operations updates and industry insights from Dabel Resources Ventures Limited.",
+		contactTitle: "Contact",
+		contactDescription:
+			"Contact Dabel Resources Ventures Limited — head office on Egweme Road, Rivers State and our jetty at Gbalajam, Woji.",
+	},
 	homeAbout: {
 		title: "About Us",
 		subtitle: "Who We Are",
@@ -115,7 +144,6 @@ export const CONTENT_DEFAULTS = {
 		formTitle: "Send us a message",
 		formNote: "Fields marked optional can be left blank.",
 		successMessage: "Thank you — your message is in. Our team will get back to you shortly.",
-		mapQuery: "Gbalajam, Woji, Port Harcourt, Rivers State",
 	},
 } as const;
 
@@ -138,6 +166,43 @@ export const CONTENT_SECTIONS: SectionDef[] = [
 			{ name: "newsletterTitle", label: "Newsletter heading" },
 			{ name: "newsletterText", label: "Newsletter text", type: "textarea" },
 			{ name: "copyright", label: "Copyright line", help: "The year is added automatically." },
+		],
+	},
+	{
+		key: "nav",
+		page: "Site-wide",
+		title: "Menu & navigation labels",
+		description: "Names shown in the top menu, mobile menu, breadcrumbs and footer. The pages they link to stay the same.",
+		fields: [
+			{ name: "home", label: "Menu — Home" },
+			{ name: "about", label: "Menu — About" },
+			{ name: "offers", label: "Menu — Offers" },
+			{ name: "insights", label: "Menu — Insights" },
+			{ name: "contact", label: "Menu — Contact" },
+			{ name: "footerCompanyTitle", label: "Footer — links column title" },
+			{ name: "footerOffersTitle", label: "Footer — offers column title" },
+		],
+	},
+	{
+		key: "seo",
+		page: "Site-wide",
+		title: "SEO — Google & link previews",
+		description:
+			"What appears in the browser tab, in Google results and when a link is shared on WhatsApp/LinkedIn. Page titles are shown as “Title | suffix”. Offer and article pages use their own name and description automatically.",
+		fields: [
+			{ name: "siteTitle", label: "Home page title (full)", help: "Shown on the home page tab and in Google. ~50–60 characters is ideal." },
+			{ name: "titleSuffix", label: "Title suffix for other pages", help: "e.g. “About Us | Dabel Resources”." },
+			{ name: "description", label: "Default description (home page)", type: "textarea", help: "Shown under the title in Google. ~150–160 characters is ideal." },
+			{ name: "keywords", label: "Keywords", type: "textarea", help: "Comma-separated." },
+			{ name: "shareImage", label: "Link preview image", type: "image", help: "Shown when the site is shared on WhatsApp, LinkedIn, X, etc." },
+			{ name: "aboutTitle", label: "About page — title" },
+			{ name: "aboutDescription", label: "About page — description", type: "textarea" },
+			{ name: "offersTitle", label: "Offers page — title" },
+			{ name: "offersDescription", label: "Offers page — description", type: "textarea" },
+			{ name: "insightsTitle", label: "Insights page — title" },
+			{ name: "insightsDescription", label: "Insights page — description", type: "textarea" },
+			{ name: "contactTitle", label: "Contact page — title" },
+			{ name: "contactDescription", label: "Contact page — description", type: "textarea" },
 		],
 	},
 	{
@@ -266,7 +331,6 @@ export const CONTENT_SECTIONS: SectionDef[] = [
 			{ name: "formTitle", label: "Form heading" },
 			{ name: "formNote", label: "Form note" },
 			{ name: "successMessage", label: "Message after sending", type: "textarea" },
-			{ name: "mapQuery", label: "Map location (search text)", help: "Anything you'd type into Google Maps." },
 		],
 	},
 ];

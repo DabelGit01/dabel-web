@@ -24,7 +24,7 @@ export async function GET() {
 
 const putSchema = z.object({
 	key: z.string(),
-	value: z.record(z.string().max(5000)),
+	value: z.record(z.string().max(5000)), // keywords/descriptions fit comfortably
 });
 
 /** Save one section. Only known fields are stored; empty strings reset a field to its default. */

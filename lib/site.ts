@@ -24,12 +24,21 @@ export const SITE = {
 	],
 } as const;
 
+/** Menu structure. Labels are admin-editable (Page Content → Menu & navigation); use useNavLinks() in components. */
+/**
+ * Public base URL for absolute links (SEO, link previews). Set NEXT_PUBLIC_SITE_URL once the
+ * real domain is live; until then Vercel's production URL is used, so previews work on *.vercel.app.
+ */
+export const BASE_URL =
+	process.env.NEXT_PUBLIC_SITE_URL ||
+	(process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : SITE.url);
+
 export const NAV_LINKS = [
-	{ label: "Home", href: "/" },
-	{ label: "About", href: "/about" },
-	{ label: "Offers", href: "/offers" },
-	{ label: "Insights", href: "/insights" },
-	{ label: "Contact", href: "/contact" },
+	{ key: "home", label: "Home", href: "/" },
+	{ key: "about", label: "About", href: "/about" },
+	{ key: "offers", label: "Offers", href: "/offers" },
+	{ key: "insights", label: "Insights", href: "/insights" },
+	{ key: "contact", label: "Contact", href: "/contact" },
 ] as const;
 
 export const OFFICES_FALLBACK = [

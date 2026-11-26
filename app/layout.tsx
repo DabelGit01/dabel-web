@@ -4,7 +4,8 @@ import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { introScript } from "@/components/site/Preloader";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { SITE } from "@/lib/site";
+import { getContent } from "@/lib/public-data";
+import { BASE_URL, SITE } from "@/lib/site";
 import "./globals.css";
 
 const display = Inter_Tight({
@@ -36,37 +37,29 @@ const jsonLd = {
 	},
 };
 
-export const metadata: Metadata = {
-	metadataBase: new URL(SITE.url),
-	title: {
-		default: `${SITE.shortName} | ${SITE.seoTitle}`,
-		template: `%s | ${SITE.shortName}`,
-	},
-	description: SITE.seoDescription,
-	keywords: [
-		"Dabel Resources",
-		"marine logistics Nigeria",
-		"marine logistics Port Harcourt",
-		"vessel management Nigeria",
-		"vessel chartering Port Harcourt",
-		"inter-ship agency",
-		"port services Rivers State",
-		"cargo transport Niger Delta",
-		"offshore oil and gas logistics",
-		"tugboat and barge services",
-		"marine vessel supply",
-		"oil and gas procurement",
-	],
-	openGraph: {
-		type: "website",
-		siteName: SITE.name,
-		title: `${SITE.shortName} | ${SITE.seoTitle}`,
-		description: SITE.seoDescription,
-		url: SITE.url,
-		images: [{ url: "/images/tug-barge.jpg", width: 1280, height: 720, alt: SITE.name }],
-	},
-	twitter: { card: "summary_large_image", images: ["/images/tug-barge.jpg"] },
-};
+/** Site-wide SEO — admin-editable in Page Content → SEO. Pages override title/description. */
+export async function generateMetadata(): Promise<Metadata> {
+	const seo = (await getContent()).seo;
+	const keywords = seo.keywords
+		.split(",")
+		.map((k) => k.trim())
+		.filter(Boolean);
+	return {
+		metadataBase: new URL(BASE_URL),
+		title: { default: seo.siteTitle, template: `%s | ${seo.titleSuffix}` },
+		description: seo.description,
+		keywords,
+		openGraph: {
+			type: "website",
+			siteName: SITE.name,
+			title: seo.siteTitle,
+			description: seo.description,
+			url: BASE_URL,
+			images: [{ url: seo.shareImage, alt: SITE.name }],
+		},
+		twitter: { card: "summary_large_image", title: seo.siteTitle, description: seo.description, images: [seo.shareImage] },
+	};
+}
 
 export const viewport: Viewport = {
 	themeColor: [

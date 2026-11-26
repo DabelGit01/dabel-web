@@ -19,9 +19,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { DabelLogo } from "@/components/brand/DabelLogo";
-import { useContent } from "@/components/site/ContentProvider";
+import { useContent, useNavLinks } from "@/components/site/ContentProvider";
 import { useApi } from "@/hooks/use-api";
-import { NAV_LINKS, SERVICES_FALLBACK } from "@/lib/site";
+import { SERVICES_FALLBACK } from "@/lib/site";
 import type { ContactDetail, Offer, SocialLink } from "@/lib/types";
 
 function socialIcon(platform: string): LucideIcon {
@@ -105,6 +105,8 @@ function Newsletter() {
 
 export function Footer() {
 	const g = useContent("global");
+	const nav = useContent("nav");
+	const navLinks = useNavLinks();
 	const { data: socials } = useApi<SocialLink[]>("/api/public/socials");
 	const { data: contacts } = useApi<ContactDetail[]>("/api/public/contacts");
 	const { data: offers } = useApi<Offer[]>("/api/public/offers");
@@ -164,9 +166,9 @@ export function Footer() {
 				</div>
 
 				<nav aria-label="Footer" className="space-y-5">
-					<h3 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7fd8f7]">Company</h3>
+					<h3 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7fd8f7]">{nav.footerCompanyTitle}</h3>
 					<ul className="space-y-3 text-sm">
-						{NAV_LINKS.map((l) => (
+						{navLinks.map((l) => (
 							<li key={l.href}>
 								<Link href={l.href} className="text-white/65 transition hover:text-white">
 									{l.label}
@@ -177,7 +179,7 @@ export function Footer() {
 				</nav>
 
 				<div className="space-y-5">
-					<h3 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7fd8f7]">Offers</h3>
+					<h3 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7fd8f7]">{nav.footerOffersTitle}</h3>
 					<ul className="space-y-3 text-sm">
 						{offerLinks.map((s) => (
 							<li key={s.label}>

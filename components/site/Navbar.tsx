@@ -10,8 +10,7 @@ import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { PUBLIC_ENDPOINTS, prefetchApi } from "@/hooks/use-api";
 import { useIntroDone } from "@/hooks/use-intro";
 import { cn } from "@/lib/utils";
-import { NAV_LINKS } from "@/lib/site";
-import { useContent } from "@/components/site/ContentProvider";
+import { useContent, useNavLinks } from "@/components/site/ContentProvider";
 
 /** Full-width header photos used by the inner pages (keep in sync with each page's PageHero). */
 
@@ -34,6 +33,7 @@ export function Navbar() {
 	const pathname = usePathname();
 	const ready = useIntroDone();
 	const g = useContent("global");
+	const NAV_LINKS = useNavLinks();
 	// inner-page header photos (admin-editable) — joined so the effect below only re-runs when they change
 	const heroImgs = [useContent("about").image, useContent("offers").image, useContent("insights").image, useContent("contact").image].join("|");
 	const [scrolled, setScrolled] = useState(false);

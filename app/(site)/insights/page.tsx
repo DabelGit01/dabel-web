@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
 import { InsightsBrowser } from "@/components/insights/InsightsBrowser";
 import { PageHero } from "@/components/site/primitives";
 import { getContent } from "@/lib/public-data";
+import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-	title: "Insights",
-	description: "News, operations updates and industry insights from Dabel Resources Ventures Limited.",
-};
+export function generateMetadata() {
+	return pageMetadata("insights");
+}
 
 export default async function InsightsPage() {
-	const c = (await getContent()).insights;
+	const content = await getContent();
+	const c = content.insights;
 	return (
 		<>
 			<PageHero
@@ -20,7 +20,7 @@ export default async function InsightsPage() {
 				accent={c.accent}
 				body={c.body}
 				image={c.image}
-				crumbs={[{ label: "Home", href: "/" }, { label: "Insights" }]}
+				crumbs={[{ label: content.nav.home, href: "/" }, { label: content.nav.insights }]}
 			/>
 			<InsightsBrowser />
 		</>

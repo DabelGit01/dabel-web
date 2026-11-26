@@ -84,18 +84,6 @@ export function ContactView() {
 					</div>
 				</Reveal>
 			</div>
-
-			<div className="container-x mt-20">
-				<Reveal className="overflow-hidden rounded-[2rem] ring-1 ring-line">
-					<iframe
-						title={`Map — ${c.mapQuery}`}
-						src={`https://www.google.com/maps?q=${encodeURIComponent(c.mapQuery)}&output=embed`}
-						className="h-[24rem] w-full grayscale dark:invert-[0.92] dark:hue-rotate-180"
-						loading="lazy"
-						referrerPolicy="no-referrer-when-downgrade"
-					/>
-				</Reveal>
-			</div>
 		</section>
 	);
 }
