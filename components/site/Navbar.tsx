@@ -10,15 +10,10 @@ import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { PUBLIC_ENDPOINTS, prefetchApi } from "@/hooks/use-api";
 import { useIntroDone } from "@/hooks/use-intro";
 import { cn } from "@/lib/utils";
-import { NAV_LINKS, SITE } from "@/lib/site";
+import { NAV_LINKS } from "@/lib/site";
+import { useContent } from "@/components/site/ContentProvider";
 
 /** Full-width header photos used by the inner pages (keep in sync with each page's PageHero). */
-const PAGE_HERO_IMAGES = [
-	"/images/tanker.jpg",
-	"/images/port-traffic.jpg",
-	"/images/cranes-lift.jpg",
-	"/images/houseboat.jpg",
-];
 
 /**
  * Pre-download the optimised variant next/image will request for a full-width
@@ -38,6 +33,9 @@ function warmImages(srcs: string[]) {
 export function Navbar() {
 	const pathname = usePathname();
 	const ready = useIntroDone();
+	const g = useContent("global");
+	// inner-page header photos (admin-editable) — joined so the effect below only re-runs when they change
+	const heroImgs = [useContent("about").image, useContent("offers").image, useContent("insights").image, useContent("contact").image].join("|");
 	const [scrolled, setScrolled] = useState(false);
 	const [hidden, setHidden] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -61,9 +59,9 @@ export function Navbar() {
 		const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 800));
 		idle(() => {
 			prefetchApi(PUBLIC_ENDPOINTS);
-			warmImages(PAGE_HERO_IMAGES);
+			warmImages(heroImgs.split("|").filter(Boolean));
 		});
-	}, [ready]);
+	}, [ready, heroImgs]);
 
 	useEffect(() => setOpen(false), [pathname]);
 	useEffect(() => {
@@ -121,7 +119,7 @@ export function Navbar() {
 							href="/contact?subject=Request%20a%20quote"
 							className="hidden min-h-11 items-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-brand-contrast transition hover:bg-[#4cc8f4] sm:inline-flex"
 						>
-							Get a quote
+							{g.navCtaLabel}
 						</Link>
 						<button
 							type="button"
@@ -168,10 +166,6 @@ export function Navbar() {
 								</motion.div>
 							))}
 						</nav>
-						<div className="container-x space-y-1 pb-10 text-sm text-white/70">
-							<p>{SITE.phones.join(" · ")}</p>
-							<p>{SITE.emails[0]}</p>
-						</div>
 					</motion.div>
 				)}
 			</AnimatePresence>

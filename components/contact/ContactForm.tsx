@@ -61,7 +61,7 @@ function Field({
 	);
 }
 
-export function ContactForm({ defaults }: { defaults?: Partial<FormData> }) {
+export function ContactForm({ defaults, successMessage }: { defaults?: Partial<FormData>; successMessage?: string }) {
 	const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
 	const {
 		register,
@@ -148,7 +148,7 @@ export function ContactForm({ defaults }: { defaults?: Partial<FormData> }) {
 					>
 						{status === "ok" ? <CheckCircle2 className="h-5 w-5 shrink-0" /> : <AlertCircle className="h-5 w-5 shrink-0" />}
 						{status === "ok"
-							? "Thank you — your message is in. Our team will get back to you shortly."
+							? successMessage || "Thank you — your message is in. Our team will get back to you shortly."
 							: "We couldn't send your message. Please try again or call us directly."}
 					</motion.p>
 				)}

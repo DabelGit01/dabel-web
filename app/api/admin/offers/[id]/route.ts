@@ -1,3 +1,4 @@
+import { withInvalidate } from "@/lib/admin-route";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -30,7 +31,7 @@ const offerSchema = z.object({
 	gallery: z.array(z.object({ url: z.string(), title: z.string() })).optional(),
 });
 
-export async function PATCH(
+async function PATCHHandler(
 	request: Request,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -112,7 +113,7 @@ export async function PATCH(
 	}
 }
 
-export async function DELETE(
+async function DELETEHandler(
 	_request: Request,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -158,3 +159,6 @@ export async function DELETE(
 		);
 	}
 }
+
+export const PATCH = withInvalidate(PATCHHandler);
+export const DELETE = withInvalidate(DELETEHandler);

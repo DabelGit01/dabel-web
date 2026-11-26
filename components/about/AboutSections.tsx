@@ -2,51 +2,47 @@
 
 import { Facebook, Globe, Instagram, Linkedin, type LucideIcon, Mail, Phone, Twitter, Youtube } from "lucide-react";
 import Image from "next/image";
-import { Grade } from "@/components/site/Grade";
+import { useContent } from "@/components/site/ContentProvider";
 import { Reveal, SectionHeading, Skeleton } from "@/components/site/primitives";
 import { useApi } from "@/hooks/use-api";
-import { ABOUT_FALLBACK, SITE } from "@/lib/site";
+import { ABOUT_FALLBACK } from "@/lib/site";
 import type { SiteMeta, SocialLink, TeamMember } from "@/lib/types";
 
+/** Text: Admin → Site Meta → Landing (about header & body). Headings: Page Content → About page. */
 export function CompanyOverview() {
+	const c = useContent("about");
 	const { data, loading } = useApi<SiteMeta>("/api/public/site-meta");
 	const header = data?.aboutHeader || "Integrated marine logistics, procurement & environmental solutions";
 	const body = data?.aboutBody || `${ABOUT_FALLBACK.welcomeBody1}\n\n${ABOUT_FALLBACK.welcomeBody2}`;
 
 	return (
 		<section className="bg-bg py-24 sm:py-32">
-			<div className="container-x grid gap-14 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
+			<div className="container-x grid gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-20">
 				<div>
-					<SectionHeading title="About Us" subtitle="Who We Are" />
+					<SectionHeading title={c.overviewTitle} subtitle={c.overviewSubtitle} />
 					<Reveal delay={0.1}>
-						<p className="mt-8 font-heading text-[clamp(1.6rem,2.6vw,2.25rem)] font-semibold leading-tight tracking-tight text-fg">
+						<p className="mt-10 font-heading text-[clamp(1.8rem,3vw,2.6rem)] font-semibold leading-[1.12] tracking-[-0.03em] text-fg">
 							{header}
 						</p>
 					</Reveal>
-					<Reveal delay={0.15} className="mt-6 space-y-5 text-lg leading-[1.8] text-fg-muted">
-						{loading ? (
-							<div className="space-y-3">
-								<Skeleton className="h-4 w-full" />
-								<Skeleton className="h-4 w-5/6" />
-							</div>
-						) : (
-							body.split(/\n{2,}/).map((p) => <p key={p.slice(0, 24)}>{p}</p>)
-						)}
-					</Reveal>
 				</div>
-				<Reveal delay={0.1} className="grid grid-cols-2 gap-4">
-					<div className="relative row-span-2 overflow-hidden rounded-[2rem]" data-graded>
-						<Image src="/images/about-tug-portrait.jpg" alt="Dabel tugboat moored at the jetty" fill sizes="(min-width:1024px) 25vw, 50vw" className="object-cover" />
-						<Grade />
-					</div>
-					<div className="relative aspect-square overflow-hidden rounded-[2rem]" data-graded>
-						<Image src="/images/crew-briefing.jpg" alt="Dabel crew safety briefing in the field" fill sizes="(min-width:1024px) 25vw, 50vw" className="object-cover" />
-						<Grade />
-					</div>
-					<div className="flex aspect-square flex-col justify-end rounded-[2rem] bg-navy p-6 text-white">
-						<p className="font-heading text-5xl font-bold">{SITE.founded}</p>
-						<p className="mt-2 text-sm text-white/70">Founded &amp; registered with CAC — {SITE.rcNumber}</p>
-					</div>
+				<Reveal delay={0.15} className="space-y-5 text-lg leading-[1.85] text-fg-muted lg:pt-24">
+					{loading ? (
+						<div className="space-y-3">
+							<Skeleton className="h-4 w-full" />
+							<Skeleton className="h-4 w-5/6" />
+							<Skeleton className="h-4 w-4/5" />
+						</div>
+					) : (
+						body
+							.split(/\n{2,}/)
+							.filter((p) => p.trim())
+							.map((p) => (
+								<p key={p.slice(0, 32)} className="whitespace-pre-line">
+									{p}
+								</p>
+							))
+					)}
 				</Reveal>
 			</div>
 		</section>
@@ -54,19 +50,20 @@ export function CompanyOverview() {
 }
 
 export function FounderSection() {
+	const c = useContent("about");
 	const { data } = useApi<SiteMeta>("/api/public/site-meta");
 	if (!data?.founderBio?.trim()) return null;
 
 	return (
 		<section className="bg-bg py-24 sm:py-32">
 			<div className="container-x">
-				<SectionHeading title="Leadership" subtitle="Our Founder" />
-				<div className="mt-14 grid items-center gap-12 lg:grid-cols-[0.9fr_1.3fr]">
-					<Reveal className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-surface-2">
-						{data.founderImageUrl && (
+				<SectionHeading title={c.founderTitle} subtitle={c.founderSubtitle} />
+				<div className={`mt-14 grid items-center gap-12 ${data.founderImageUrl ? "lg:grid-cols-[0.9fr_1.3fr]" : ""}`}>
+					{data.founderImageUrl && (
+						<Reveal className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-surface-2">
 							<Image src={data.founderImageUrl} alt={data.founderName} fill sizes="(min-width:1024px) 38vw, 90vw" className="object-cover" />
-						)}
-					</Reveal>
+						</Reveal>
+					)}
 					<Reveal delay={0.1}>
 						<h3 className="font-heading text-4xl font-semibold tracking-tight text-fg">{data.founderName}</h3>
 						<p className="mt-3 text-sm font-semibold uppercase tracking-[0.22em] text-brand-ink">{data.founderRole}</p>
@@ -79,6 +76,7 @@ export function FounderSection() {
 }
 
 export function LeadershipTeam() {
+	const c = useContent("about");
 	const { data, loading } = useApi<TeamMember[]>("/api/public/team");
 	const members = data ?? [];
 	if (!loading && members.length === 0) return null;
@@ -86,7 +84,7 @@ export function LeadershipTeam() {
 	return (
 		<section className="bg-surface py-24 sm:py-32">
 			<div className="container-x">
-				<SectionHeading title="Our Team" subtitle="The People Behind Dabel" />
+				<SectionHeading title={c.teamTitle} subtitle={c.teamSubtitle} />
 				<div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 					{loading
 						? [0, 1, 2, 3].map((n) => <Skeleton key={n} className="aspect-[4/5] rounded-3xl" />)
@@ -145,6 +143,7 @@ function socialIcon(platform: string): LucideIcon {
 }
 
 export function SocialHandles() {
+	const c = useContent("about");
 	const { data } = useApi<SocialLink[]>("/api/public/socials");
 	const socials = (data ?? []).filter((s) => s.published !== false);
 	if (socials.length === 0) return null;
@@ -152,7 +151,7 @@ export function SocialHandles() {
 	return (
 		<section className="bg-bg py-20">
 			<div className="container-x flex flex-col items-center gap-8 text-center">
-				<SectionHeading title="Connect" subtitle="Follow Dabel" align="center" />
+				<SectionHeading title={c.socialsTitle} subtitle={c.socialsSubtitle} align="center" />
 				<div className="flex flex-wrap justify-center gap-4">
 					{socials.map((s) => {
 						const Icon = socialIcon(s.platform);

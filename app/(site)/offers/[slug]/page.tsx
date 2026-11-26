@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { Gallery } from "@/components/site/Gallery";
 import { PageHero } from "@/components/site/primitives";
 import { prisma } from "@/lib/prisma";
+import { getContacts, getContent, getSiteMeta } from "@/lib/public-data";
 import { ABOUT_FALLBACK, SITE } from "@/lib/site";
 import type { GalleryImage } from "@/lib/types";
 
@@ -46,9 +47,10 @@ export default async function ServiceDetailPage({ params }: Props) {
 	const offer = await getOffer(slug);
 	if (!offer?.published) notFound();
 
-	const [meta, contacts] = await Promise.all([
-		prisma.siteMeta.findFirst().catch(() => null),
-		prisma.contactDetail.findMany({ orderBy: { order: "asc" } }).catch(() => []),
+	const [meta, contacts, content] = await Promise.all([
+		getSiteMeta().catch(() => null),
+		getContacts().catch(() => []),
+		getContent(),
 	]);
 	const phone = contacts.find((c) => c.platform.toLowerCase() === "phone");
 	const email = contacts.find((c) => ["mail", "email"].includes(c.platform.toLowerCase()));
@@ -67,14 +69,14 @@ export default async function ServiceDetailPage({ params }: Props) {
 				title={offer.name}
 				body={offer.subTopic || undefined}
 				image={offer.imageUrl || "/images/tanker.jpg"}
-				crumbs={[{ label: "Home", href: "/" }, { label: "Services", href: "/services" }, { label: offer.name }]}
+				crumbs={[{ label: "Home", href: "/" }, { label: "Offers", href: "/offers" }, { label: offer.name }]}
 			/>
 
 			<section className="bg-bg py-20 sm:py-28">
 				<div className="container-x grid gap-14 lg:grid-cols-[1.5fr_1fr]">
 					<div>
-						<Link href="/services" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-fg-muted hover:text-fg">
-							<ArrowLeft className="h-4 w-4" /> All services
+						<Link href="/offers" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-fg-muted hover:text-fg">
+							<ArrowLeft className="h-4 w-4" /> All offers
 						</Link>
 
 						{offer.imageUrl && (
@@ -117,7 +119,7 @@ export default async function ServiceDetailPage({ params }: Props) {
 					<aside className="lg:sticky lg:top-28 lg:self-start">
 						<div className="relative overflow-hidden rounded-[2rem] bg-navy p-8 text-white sm:p-10">
 							<div className="absolute inset-y-10 left-0 w-1 bg-brand" aria-hidden="true" />
-							<h2 className="font-heading text-2xl font-semibold tracking-tight">For more enquiries</h2>
+							<h2 className="font-heading text-2xl font-semibold tracking-tight">{content.offers.enquiryTitle}</h2>
 							<p className="mt-4 leading-relaxed text-white/70">{meta?.enquiryText || ABOUT_FALLBACK.enquiryText}</p>
 							<div className="mt-8 space-y-3 text-sm">
 								<a href={phone?.url || `tel:${SITE.phones[0].replace(/\s/g, "")}`} className="flex items-center gap-3 text-white/85 hover:text-white">
@@ -131,7 +133,7 @@ export default async function ServiceDetailPage({ params }: Props) {
 								href={`/contact?subject=${encodeURIComponent("Request a quote")}&service=${encodeURIComponent(offer.name)}`}
 								className="group mt-8 flex min-h-13 items-center justify-center gap-2.5 rounded-full bg-brand px-6 font-semibold text-brand-contrast transition hover:bg-[#4cc8f4]"
 							>
-								Request this service
+								{content.offers.enquiryButton}
 								<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
 							</Link>
 						</div>

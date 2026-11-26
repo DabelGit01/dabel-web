@@ -4,6 +4,7 @@ import { ArrowUpRight, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useContent } from "@/components/site/ContentProvider";
 import { PostCard } from "@/components/site/PostCard";
 import { Reveal, Skeleton } from "@/components/site/primitives";
 import { useApi } from "@/hooks/use-api";
@@ -13,6 +14,7 @@ import { type BlogCategory, type BlogPost, excerpt, formatDate } from "@/lib/typ
 const PER_PAGE = 6;
 
 export function InsightsBrowser() {
+	const c = useContent("insights");
 	const { data: posts, loading } = useApi<BlogPost[]>("/api/public/blog");
 	const { data: cats } = useApi<BlogCategory[]>("/api/public/blog-categories");
 	const [cat, setCat] = useState("all");
@@ -82,8 +84,8 @@ export function InsightsBrowser() {
 					</div>
 				) : filtered.length === 0 ? (
 					<div className="mt-12 rounded-3xl bg-surface p-16 text-center ring-1 ring-line">
-						<p className="font-heading text-2xl font-semibold text-fg">No articles yet</p>
-						<p className="mt-2 text-fg-muted">{q ? "Try a different search." : "Check back soon for news from the Dabel team."}</p>
+						<p className="font-heading text-2xl font-semibold text-fg">{q ? "No matching articles" : c.emptyTitle}</p>
+						<p className="mt-2 text-fg-muted">{q ? "Try a different search." : c.emptyText}</p>
 					</div>
 				) : (
 					<>

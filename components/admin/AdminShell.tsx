@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
 	BookOpen,
 	Cpu,
+	FileText,
 	Globe,
 	LayoutDashboard,
 	LogOut,
@@ -16,17 +17,18 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { DabelMark } from "@/components/brand/DabelLogo";
+import { LogoMark } from "@/components/brand/DabelLogo";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { api } from "@/lib/api";
 
 const NAV = [
 	{ href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
 	{ href: "/admin/messages", label: "Messages", icon: Mail },
-	{ href: "/admin/offers", label: "Services", icon: Package },
+	{ href: "/admin/content", label: "Page Content", icon: FileText },
+	{ href: "/admin/offers", label: "Offers", icon: Package },
 	{ href: "/admin/blog", label: "Blog & Newsletter", icon: BookOpen },
-	{ href: "/admin/devices", label: "Devices", icon: Cpu },
 	{ href: "/admin/site-meta", label: "Site Meta", icon: Globe },
+	{ href: "/admin/devices", label: "Devices", icon: Cpu },
 	{ href: "/admin/admins", label: "Admins", icon: Users },
 ];
 
@@ -100,7 +102,7 @@ function SidebarInner({
 	return (
 		<div className="admin-sidebar flex h-full flex-col bg-navy">
 			<div className="flex h-16 shrink-0 items-center gap-2.5 border-b border-white/8 px-5">
-				<DabelMark tone="onDark" className="h-8 w-9" />
+				<LogoMark className="h-9 w-9 p-1" />
 				<span className="font-heading text-sm font-bold uppercase tracking-[0.12em] text-white">
 					DABEL
 				</span>

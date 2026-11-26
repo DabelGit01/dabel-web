@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { DabelMark } from "@/components/brand/DabelLogo";
+import { LogoMark } from "@/components/brand/DabelLogo";
 
 export default function NotFound() {
 	return (
@@ -11,7 +11,7 @@ export default function NotFound() {
 			>
 				404
 			</p>
-			<DabelMark tone="onDark" className="relative h-20 w-24" />
+			<LogoMark className="relative h-20 w-20 p-2.5" />
 			<h1 className="relative mt-8 font-heading text-4xl font-bold tracking-tight sm:text-5xl">Off course.</h1>
 			<p className="relative mt-4 max-w-md text-lg text-white/70">
 				The page you're looking for has moved or doesn't exist. Let's get you back to port.

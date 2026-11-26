@@ -1,3 +1,4 @@
+import { withInvalidate } from "@/lib/admin-route";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAuthenticatedAdmin, verifyAuth } from "@/lib/auth";
@@ -49,7 +50,7 @@ export async function GET() {
 	}
 }
 
-export async function POST(request: Request) {
+async function POSTHandler(request: Request) {
 	try {
 		const authorizer = await authorizePermissionsManagement("/admin/admins");
 		if (!authorizer) {
@@ -100,7 +101,7 @@ export async function POST(request: Request) {
 	}
 }
 
-export async function DELETE(request: Request) {
+async function DELETEHandler(request: Request) {
 	try {
 		const authorizer = await authorizePermissionsManagement("/admin/admins");
 		if (!authorizer) {
@@ -151,3 +152,6 @@ export async function DELETE(request: Request) {
 		);
 	}
 }
+
+export const POST = withInvalidate(POSTHandler);
+export const DELETE = withInvalidate(DELETEHandler);

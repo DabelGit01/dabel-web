@@ -161,6 +161,45 @@ model Admin {
   updatedAt   DateTime @updatedAt
 }
 
+/// Home page hero slides (admin: Page Content > Hero Slides)
+model HeroSlide {
+  id         String   @id @default(cuid())
+  label      String   // short name shown in the slide index, e.g. "Marine Logistics"
+  eyebrow    String   // small caps line above the headline
+  line1      String
+  line2      String   @default("")
+  line3      String   @default("")
+  accentLine Int      @default(3) // which line (1-3) is highlighted in brand cyan
+  body       String   @db.Text
+  imageUrl   String
+  ctaLabel   String   @default("Explore offers")
+  ctaHref    String   @default("/offers")
+  order      Int      @default(0)
+  published  Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+/// Company values ("Our Values | Guiding Principles")
+model CoreValue {
+  id        String   @id @default(cuid())
+  name      String
+  body      String   @db.Text
+  images    String[] @default([])
+  order     Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Editable page text, one row per section (key = section id, value = { field: text }).
+/// Field definitions + defaults live in lib/content.ts.
+model SiteContent {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
 /// Admin "Devices" module (moved from MongoDB to Postgres).
 /// sensors:   [{ id, name, topic, unit?, ui: "value" | "badge" }]
 /// actuators: [{ id, name, topic, ui: "button" | "switch" | "toggle", payload: "SWITCH" | "TOGGLE" | "ON" | "OFF" }]

@@ -37,10 +37,10 @@ const nextConfig = {
 	poweredByHeader: false,
 	async redirects() {
 		return [
-			{ source: "/offers", destination: "/services", permanent: true },
-			{ source: "/offers/:slug*", destination: "/services/:slug*", permanent: true },
-			{ source: "/products", destination: "/services", permanent: true },
-			{ source: "/products/:slug*", destination: "/services/:slug*", permanent: true },
+			{ source: "/services", destination: "/offers", permanent: false },
+			{ source: "/services/:slug*", destination: "/offers/:slug*", permanent: false },
+			{ source: "/products", destination: "/offers", permanent: true },
+			{ source: "/products/:slug*", destination: "/offers/:slug*", permanent: true },
 			{ source: "/blog", destination: "/insights", permanent: true },
 			{ source: "/blog/:id*", destination: "/insights/:id*", permanent: true },
 		];

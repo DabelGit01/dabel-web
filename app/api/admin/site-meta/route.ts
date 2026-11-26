@@ -1,3 +1,4 @@
+import { withInvalidate } from "@/lib/admin-route";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { verifyAuth } from "@/lib/auth";
@@ -37,7 +38,7 @@ export async function GET() {
 	}
 }
 
-export async function PATCH(request: Request) {
+async function PATCHHandler(request: Request) {
 	if (!(await verifyAuth("/admin/site-meta"))) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
@@ -83,3 +84,5 @@ export async function PATCH(request: Request) {
 		);
 	}
 }
+
+export const PATCH = withInvalidate(PATCHHandler);

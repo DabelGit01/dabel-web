@@ -3,25 +3,31 @@
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useContent } from "@/components/site/ContentProvider";
 import { Grade } from "@/components/site/Grade";
 import { SectionHeading } from "@/components/site/primitives";
+import type { CoreValueData } from "@/lib/content";
 import { cn } from "@/lib/utils";
-import { VALUES } from "@/lib/site";
 
 const ROTATE_MS = 5500;
 
-export function ValuesSection() {
+/** "Our Values | Guiding Principles". Values are managed in Admin → Page Content → Values. */
+export function ValuesSection({ values, showImages = true }: { values: CoreValueData[]; showImages?: boolean }) {
+	const c = useContent("homeValues");
 	const [i, setI] = useState(0);
 	const [hover, setHover] = useState(false);
 	const ref = useRef<HTMLElement>(null);
 	const inView = useInView(ref, { margin: "-20%" });
-	const v = VALUES[i];
+	const v = values[Math.min(i, values.length - 1)];
+	const images = showImages ? (v?.images ?? []).filter(Boolean) : [];
 
 	useEffect(() => {
-		if (!inView || hover) return;
-		const t = window.setTimeout(() => setI((n) => (n + 1) % VALUES.length), ROTATE_MS);
+		if (!inView || hover || values.length < 2) return;
+		const t = window.setTimeout(() => setI((n) => (n + 1) % values.length), ROTATE_MS);
 		return () => clearTimeout(t);
-	}, [i, inView, hover]);
+	}, [i, inView, hover, values.length]);
+
+	if (!v) return null;
 
 	return (
 		<section
@@ -38,11 +44,11 @@ export function ValuesSection() {
 
 			<div className="container-x relative">
 				<div className="flex flex-wrap items-end justify-between gap-8">
-					<SectionHeading title="Our Values" subtitle="Guiding Principles" />
+					<SectionHeading title={c.title} subtitle={c.subtitle} />
 					<div className="flex flex-wrap gap-2" role="tablist" aria-label="Values">
-						{VALUES.map((x, n) => (
+						{values.map((x, n) => (
 							<button
-								key={x.name}
+								key={x.id}
 								type="button"
 								role="tab"
 								aria-selected={n === i}
@@ -55,7 +61,7 @@ export function ValuesSection() {
 								)}
 							>
 								{x.name}
-								{n === i && !hover && (
+								{n === i && !hover && values.length > 1 && (
 									<motion.span
 										key={`bar-${i}`}
 										className="absolute inset-x-0 bottom-0 h-0.5 origin-left bg-brand"
@@ -69,50 +75,44 @@ export function ValuesSection() {
 					</div>
 				</div>
 
-				<div
-					className={cn(
-						"mt-14 grid gap-4",
-						v.images.length === 3 ? "sm:grid-cols-3" : "mx-auto max-w-4xl",
-					)}
-				>
-					<AnimatePresence mode="popLayout">
-						{v.images.map((src, n) => (
-							<motion.div
-								key={`${v.name}-${src}`}
-								initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0.4 }}
-								animate={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
-								exit={{ clipPath: "inset(100% 0 0 0)", opacity: 0.4 }}
-								transition={{ duration: 0.8, delay: n * 0.1, ease: [0.77, 0, 0.18, 1] }}
-								data-graded
-								className={cn(
-									"relative overflow-hidden rounded-3xl",
-									v.images.length === 3 ? "aspect-[16/10]" : "aspect-[16/9]",
-								)}
-							>
-								<Image
-									src={src}
-									alt=""
-									fill
-									sizes={v.images.length === 3 ? "(min-width:640px) 33vw, 100vw" : "(min-width:896px) 56rem, 100vw"}
-									className="object-cover"
-								/>
-								<Grade />
-							</motion.div>
-						))}
-					</AnimatePresence>
-				</div>
+				{images.length > 0 && (
+					<div className={cn("mt-14 grid gap-4", images.length === 3 ? "sm:grid-cols-3" : images.length === 2 ? "sm:grid-cols-2" : "mx-auto max-w-4xl")}>
+						<AnimatePresence mode="popLayout">
+							{images.map((src, n) => (
+								<motion.div
+									key={`${v.id}-${src}-${n}`}
+									initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0.4 }}
+									animate={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
+									exit={{ clipPath: "inset(100% 0 0 0)", opacity: 0.4 }}
+									transition={{ duration: 0.8, delay: n * 0.1, ease: [0.77, 0, 0.18, 1] }}
+									data-graded
+									className={cn("relative overflow-hidden rounded-3xl", images.length === 1 ? "aspect-[16/9]" : "aspect-[16/10]")}
+								>
+									<Image
+										src={src}
+										alt=""
+										fill
+										sizes={images.length === 1 ? "(min-width:896px) 56rem, 100vw" : "(min-width:640px) 33vw, 100vw"}
+										className="object-cover"
+									/>
+									<Grade />
+								</motion.div>
+							))}
+						</AnimatePresence>
+					</div>
+				)}
 
-				<div className="mx-auto mt-12 max-w-2xl text-center" aria-live="polite">
+				<div className={cn("mx-auto max-w-2xl text-center", images.length > 0 ? "mt-12" : "mt-16")} aria-live="polite">
 					<AnimatePresence mode="wait">
 						<motion.div
-							key={v.name}
+							key={v.id}
 							initial={{ opacity: 0, y: 16 }}
 							animate={{ opacity: 1, y: 0 }}
 							exit={{ opacity: 0, y: -12 }}
 							transition={{ duration: 0.4 }}
 						>
 							<h3 className="font-heading text-3xl font-semibold tracking-tight text-indigo">{v.name}</h3>
-							<p className="mt-4 text-lg leading-relaxed text-fg-muted">{v.body}</p>
+							<p className="mt-4 whitespace-pre-line text-lg leading-relaxed text-fg-muted">{v.body}</p>
 						</motion.div>
 					</AnimatePresence>
 				</div>

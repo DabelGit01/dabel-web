@@ -19,9 +19,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { DabelLogo } from "@/components/brand/DabelLogo";
+import { useContent } from "@/components/site/ContentProvider";
 import { useApi } from "@/hooks/use-api";
-import { NAV_LINKS, SERVICES_FALLBACK, SITE } from "@/lib/site";
-import type { SocialLink } from "@/lib/types";
+import { NAV_LINKS, SERVICES_FALLBACK } from "@/lib/site";
+import type { ContactDetail, Offer, SocialLink } from "@/lib/types";
 
 function socialIcon(platform: string): LucideIcon {
 	const p = platform.toLowerCase();
@@ -103,7 +104,17 @@ function Newsletter() {
 }
 
 export function Footer() {
+	const g = useContent("global");
 	const { data: socials } = useApi<SocialLink[]>("/api/public/socials");
+	const { data: contacts } = useApi<ContactDetail[]>("/api/public/contacts");
+	const { data: offers } = useApi<Offer[]>("/api/public/offers");
+
+	const offerLinks =
+		offers && offers.length > 0
+			? offers.slice(0, 4).map((o) => ({ label: o.name, href: `/offers/${o.slug}` }))
+			: SERVICES_FALLBACK.map((s) => ({ label: s.name, href: "/offers" }));
+	const phone = contacts?.find((c) => c.platform.toLowerCase() === "phone");
+	const email = contacts?.find((c) => ["mail", "email"].includes(c.platform.toLowerCase()));
 
 	return (
 		<footer className="relative overflow-hidden bg-navy-deep text-white">
@@ -113,22 +124,24 @@ export function Footer() {
 				<div className="absolute inset-0 -z-10 bg-gradient-to-r from-navy-deep via-navy-deep/85 to-navy-deep/40" />
 				<div className="container-x flex flex-col items-start justify-between gap-8 py-20 sm:py-24 lg:flex-row lg:items-center">
 					<h2 className="max-w-3xl font-heading text-[clamp(2.25rem,4.6vw,4rem)] font-bold leading-[1.02] tracking-[-0.035em]">
-						Have an operation coming up? <span className="text-brand">Let's move it.</span>
+						{g.footerCtaTitle} {g.footerCtaAccent && <span className="text-brand">{g.footerCtaAccent}</span>}
 					</h2>
-					<Link
-						href="/contact?subject=Request%20a%20quote"
-						className="group inline-flex min-h-14 shrink-0 items-center gap-3 rounded-full bg-brand px-8 text-base font-semibold text-brand-contrast transition hover:bg-[#4cc8f4]"
-					>
-						Request a quote
-						<ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-					</Link>
+					{g.footerCtaButton && (
+						<Link
+							href="/contact?subject=Request%20a%20quote"
+							className="group inline-flex min-h-14 shrink-0 items-center gap-3 rounded-full bg-brand px-8 text-base font-semibold text-brand-contrast transition hover:bg-[#4cc8f4]"
+						>
+							{g.footerCtaButton}
+							<ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+						</Link>
+					)}
 				</div>
 			</div>
 
 			<div className="container-x grid gap-12 border-t border-white/10 py-16 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.8fr_1fr_1.3fr]">
 				<div className="space-y-6">
 					<DabelLogo tone="onDark" />
-					<p className="max-w-sm text-sm leading-7 text-white/60">{SITE.description}</p>
+					<p className="max-w-sm text-sm leading-7 text-white/60">{g.footerDescription}</p>
 					{socials && socials.length > 0 && (
 						<div className="flex flex-wrap gap-2">
 							{socials.map((s) => {
@@ -164,33 +177,35 @@ export function Footer() {
 				</nav>
 
 				<div className="space-y-5">
-					<h3 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7fd8f7]">Services</h3>
+					<h3 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7fd8f7]">Offers</h3>
 					<ul className="space-y-3 text-sm">
-						{SERVICES_FALLBACK.map((s) => (
-							<li key={s.slug}>
-								<Link href="/services" className="text-white/65 transition hover:text-white">
-									{s.name}
+						{offerLinks.map((s) => (
+							<li key={s.label}>
+								<Link href={s.href} className="text-white/65 transition hover:text-white">
+									{s.label}
 								</Link>
 							</li>
 						))}
-						<li className="pt-2 text-white/65">
-							<a href={`tel:${SITE.phones[0].replace(/\s/g, "")}`} className="hover:text-white">
-								{SITE.phones[0]}
-							</a>
-						</li>
-						<li>
-							<a href={`mailto:${SITE.emails[0]}`} className="text-white/65 hover:text-white">
-								{SITE.emails[0]}
-							</a>
-						</li>
+						{phone && (
+							<li className="pt-2">
+								<a href={phone.url} className="text-white/65 hover:text-white">
+									{phone.value}
+								</a>
+							</li>
+						)}
+						{email && (
+							<li>
+								<a href={email.url} className="break-all text-white/65 hover:text-white">
+									{email.value}
+								</a>
+							</li>
+						)}
 					</ul>
 				</div>
 
 				<div className="space-y-5">
-					<h3 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7fd8f7]">Stay updated</h3>
-					<p className="text-sm leading-relaxed text-white/60">
-						Operations news and industry updates from Dabel, straight to your inbox.
-					</p>
+					<h3 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7fd8f7]">{g.newsletterTitle}</h3>
+					<p className="text-sm leading-relaxed text-white/60">{g.newsletterText}</p>
 					<Newsletter />
 				</div>
 			</div>
@@ -198,7 +213,7 @@ export function Footer() {
 			<div className="border-t border-white/10">
 				<div className="container-x flex flex-col items-start justify-between gap-4 py-6 text-xs text-white/50 sm:flex-row sm:items-center">
 					<p>
-						© {new Date().getFullYear()} {SITE.name}. {SITE.rcNumber}.
+						© {new Date().getFullYear()} {g.copyright}
 					</p>
 					<button
 						type="button"

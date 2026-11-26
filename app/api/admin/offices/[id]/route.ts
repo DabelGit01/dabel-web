@@ -1,3 +1,4 @@
+import { withInvalidate } from "@/lib/admin-route";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { verifyAuth } from "@/lib/auth";
@@ -12,7 +13,7 @@ const officeSchema = z.object({
 	published: z.boolean().optional(),
 });
 
-export async function PATCH(
+async function PATCHHandler(
 	request: Request,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -47,7 +48,7 @@ export async function PATCH(
 	}
 }
 
-export async function DELETE(
+async function DELETEHandler(
 	_request: Request,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -69,3 +70,6 @@ export async function DELETE(
 		);
 	}
 }
+
+export const PATCH = withInvalidate(PATCHHandler);
+export const DELETE = withInvalidate(DELETEHandler);

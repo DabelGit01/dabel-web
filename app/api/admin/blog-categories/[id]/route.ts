@@ -1,3 +1,4 @@
+import { withInvalidate } from "@/lib/admin-route";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { verifyAuth } from "@/lib/auth";
@@ -11,7 +12,7 @@ type RouteParams = {
 	params: Promise<{ id: string }>;
 };
 
-export async function PATCH(request: Request, { params }: RouteParams) {
+async function PATCHHandler(request: Request, { params }: RouteParams) {
 	if (!(await verifyAuth("/admin/blog"))) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
@@ -57,7 +58,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 	}
 }
 
-export async function DELETE(_request: Request, { params }: RouteParams) {
+async function DELETEHandler(_request: Request, { params }: RouteParams) {
 	if (!(await verifyAuth("/admin/blog"))) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
@@ -80,3 +81,6 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
 		);
 	}
 }
+
+export const PATCH = withInvalidate(PATCHHandler);
+export const DELETE = withInvalidate(DELETEHandler);

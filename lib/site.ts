@@ -27,7 +27,7 @@ export const SITE = {
 export const NAV_LINKS = [
 	{ label: "Home", href: "/" },
 	{ label: "About", href: "/about" },
-	{ label: "Services", href: "/services" },
+	{ label: "Offers", href: "/offers" },
 	{ label: "Insights", href: "/insights" },
 	{ label: "Contact", href: "/contact" },
 ] as const;
@@ -49,95 +49,7 @@ export const OFFICES_FALLBACK = [
 	},
 ];
 
-export type HeroSlide = {
-	id: string;
-	eyebrow: string;
-	lines: [string, string, string];
-	accentLine: 0 | 1 | 2;
-	body: string;
-	image: string;
-	alt: string;
-	cta: { label: string; href: string };
-	label: string;
-};
-
-export const HERO_SLIDES: HeroSlide[] = [
-	{
-		id: "marine",
-		label: "Marine Logistics",
-		eyebrow: "Marine Logistics · Since 2013",
-		lines: ["Driving economic", "& technological", "progress."],
-		accentLine: 2,
-		body: "Integrated marine logistics, procurement and environmental solutions for the energy and maritime sectors.",
-		image: "/images/tug-barge.jpg",
-		alt: "Dabel tugboat MV Dabel Angel II towing a barge past the jetty",
-		cta: { label: "Explore services", href: "/services" },
-	},
-	{
-		id: "vessels",
-		label: "Vessel Management",
-		eyebrow: "Vessel Management & Chartering",
-		lines: ["Vessels managed.", "Crews ready.", "On schedule."],
-		accentLine: 2,
-		body: "Vessel management, chartering, inter-ship agency and port services for offshore oil & gas operations.",
-		image: "/images/port-traffic.jpg",
-		alt: "Crew boats and offshore support vessels moving through a busy port",
-		cta: { label: "Marine services", href: "/services" },
-	},
-	{
-		id: "procurement",
-		label: "Procurement & Supply",
-		eyebrow: "Procurement & Marine Supply",
-		lines: ["Cargo moved.", "Supply delivered.", "Operations running."],
-		accentLine: 2,
-		body: "Cargo transport and marine vessel, fuel, water and labour supply — plus valves, flanges and coated pipes, delivered to site.",
-		image: "/images/crane-container.jpg",
-		alt: "Crane lifting a container onto a barge at the Dabel jetty",
-		cta: { label: "Procurement services", href: "/services" },
-	},
-];
-
-export const TICKER = [
-	"Marine logistics",
-	"Vessel management",
-	"Chartering",
-	"Inter-ship agency",
-	"Port services",
-	"Cargo transport",
-	"Offshore oil & gas support",
-	"Marine vessel supply",
-	"Fuel & water supply",
-	"Valves, flanges & coated pipes",
-	"Marine consultancy",
-];
-
-export const VALUES = [
-	{
-		name: "Speed",
-		body: "We prioritize agility, efficiency, and proactive problem-solving to ensure timely and responsive service delivery.",
-		images: ["/images/crane-container.jpg", "/images/tanker.jpg", "/images/cranes-lift.jpg"],
-	},
-	{
-		name: "Efficiency",
-		body: "We optimize resources, minimize waste, and continuously improve our processes to deliver maximum value with minimal effort.",
-		images: ["/images/tug-barge.jpg", "/images/deck-equipment.jpg", "/images/barge-tanks.jpg"],
-	},
-	{
-		name: "Dependability",
-		body: "We strive for consistent quality, take responsibility for our commitments, and maintain open communication to build lasting trust with our clients.",
-		images: ["/images/crew-briefing.jpg", "/images/houseboat.jpg", "/images/tug-angel-vi.jpg"],
-	},
-	{
-		name: "Commitment",
-		body: "We are dedicated to client satisfaction, employee growth, and ethical conduct in all our business endeavors.",
-		images: ["/images/port-traffic.jpg", "/images/tug-barge.jpg", "/images/crew-briefing.jpg"],
-	},
-	{
-		name: "Quality Management",
-		body: "We pursue excellence in all aspects of our work, continuously seek feedback, and prioritize client satisfaction to deliver exceptional service.",
-		images: ["/images/boat-cabin.jpg", "/images/houseboat.jpg", "/images/deck-equipment.jpg"],
-	},
-];
+// Hero slides and values are managed in the admin (Page Content); defaults live in lib/content.ts.
 
 export type ServiceDivision = {
 	slug: string;
@@ -215,6 +127,3 @@ export const ABOUT_FALLBACK = {
 		"Talk to our team about vessels, environmental response or supply for your next operation — we respond promptly.",
 };
 
-export function yearsInOperation() {
-	return new Date().getFullYear() - SITE.founded;
-}

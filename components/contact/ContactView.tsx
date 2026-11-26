@@ -3,6 +3,7 @@
 import { Globe, Linkedin, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { ContactForm, SUBJECTS } from "@/components/contact/ContactForm";
+import { useContent } from "@/components/site/ContentProvider";
 import { Reveal, SectionHeading } from "@/components/site/primitives";
 import { useApi } from "@/hooks/use-api";
 import { SITE } from "@/lib/site";
@@ -24,13 +25,14 @@ const icons: Record<string, React.ComponentType<{ className?: string }>> = {
 	address: MapPin,
 };
 
-function FormWithParams() {
+function FormWithParams({ successMessage }: { successMessage: string }) {
 	const sp = useSearchParams();
 	const s = sp.get("subject");
 	const service = sp.get("service");
 	const subject = SUBJECTS.find((x) => x.toLowerCase() === s?.toLowerCase());
 	return (
 		<ContactForm
+			successMessage={successMessage}
 			defaults={{
 				subject: subject ?? (service ? "Request a quote" : undefined),
 				message: service ? `I'd like to request: ${service}.\n\nLocation / timeline: ` : undefined,
@@ -40,6 +42,7 @@ function FormWithParams() {
 }
 
 export function ContactView() {
+	const c = useContent("contact");
 	const { data } = useApi<ContactDetail[]>("/api/public/contacts", FALLBACK);
 	const contacts = data ?? FALLBACK;
 
@@ -47,11 +50,7 @@ export function ContactView() {
 		<section className="bg-bg py-20 sm:py-28">
 			<div className="container-x grid gap-14 lg:grid-cols-[1fr_1.35fr] lg:gap-20">
 				<div>
-					<SectionHeading
-						title="Let's talk"
-						subtitle="We respond promptly"
-						intro="Vessels, environmental response, supply or personnel — tell us what you need and our team will come back to you."
-					/>
+					<SectionHeading title={c.sectionTitle} subtitle={c.sectionSubtitle} intro={c.sectionIntro} />
 					<ul className="mt-10 space-y-3">
 						{contacts.map((c, i) => {
 							const Icon = icons[c.platform.toLowerCase().trim()] ?? Globe;
@@ -78,10 +77,10 @@ export function ContactView() {
 				</div>
 
 				<Reveal delay={0.1} className="rounded-[2rem] bg-surface p-6 ring-1 ring-line sm:p-10">
-					<h2 className="font-heading text-2xl font-semibold tracking-tight text-fg">Send us a message</h2>
-					<p className="mt-2 text-fg-muted">Fields marked optional can be left blank.</p>
+					<h2 className="font-heading text-2xl font-semibold tracking-tight text-fg">{c.formTitle}</h2>
+					{c.formNote && <p className="mt-2 text-fg-muted">{c.formNote}</p>}
 					<div className="mt-8">
-						<FormWithParams />
+						<FormWithParams successMessage={c.successMessage} />
 					</div>
 				</Reveal>
 			</div>
@@ -89,8 +88,8 @@ export function ContactView() {
 			<div className="container-x mt-20">
 				<Reveal className="overflow-hidden rounded-[2rem] ring-1 ring-line">
 					<iframe
-						title="Map — Dabel Resources Jetty, Gbalajam, Woji"
-						src="https://www.google.com/maps?q=Gbalajam,+Woji,+Port+Harcourt,+Rivers+State&output=embed"
+						title={`Map — ${c.mapQuery}`}
+						src={`https://www.google.com/maps?q=${encodeURIComponent(c.mapQuery)}&output=embed`}
 						className="h-[24rem] w-full grayscale dark:invert-[0.92] dark:hue-rotate-180"
 						loading="lazy"
 						referrerPolicy="no-referrer-when-downgrade"

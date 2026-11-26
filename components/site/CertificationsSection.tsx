@@ -2,11 +2,13 @@
 
 import { Award } from "lucide-react";
 import Image from "next/image";
+import { useContent } from "@/components/site/ContentProvider";
 import { Reveal, SectionHeading, Skeleton } from "@/components/site/primitives";
 import { useApi } from "@/hooks/use-api";
 import type { Certification } from "@/lib/types";
 
 export function CertificationsSection({ limit, id }: { limit?: number; id?: string }) {
+	const c = useContent("certifications");
 	const { data, loading } = useApi<Certification[]>("/api/public/certifications");
 	const certs = (data ?? []).slice(0, limit ?? 99);
 
@@ -15,11 +17,7 @@ export function CertificationsSection({ limit, id }: { limit?: number; id?: stri
 	return (
 		<section id={id} className="scroll-mt-24 bg-surface py-24 sm:py-32">
 			<div className="container-x">
-				<SectionHeading
-					title="Certifications"
-					subtitle="Accreditations"
-					intro="Registered, certified and compliant — the credentials behind every engagement."
-				/>
+				<SectionHeading title={c.title} subtitle={c.subtitle} intro={c.intro} />
 				<div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 					{loading
 						? [0, 1, 2].map((n) => <Skeleton key={n} className="h-80 rounded-3xl" />)

@@ -5,26 +5,31 @@ import { ValuesSection } from "@/components/home/ValuesSection";
 import { CertificationsSection } from "@/components/site/CertificationsSection";
 import { OfficesSection } from "@/components/site/OfficesSection";
 import { PageHero } from "@/components/site/primitives";
+import { getContent, getValues } from "@/lib/public-data";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
 	title: "About Us",
 	description:
-		"Founded in 2013 in Rivers State, Dabel Resources Ventures Limited delivers marine logistics, procurement and environmental solutions to the energy and maritime sectors.",
+		"Founded in 2013 in Rivers State, Dabel Resources Ventures Limited delivers marine logistics, procurement and consultancy to the energy and maritime sectors.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+	const [content, values] = await Promise.all([getContent(), getValues()]);
+	const c = content.about;
 	return (
 		<>
 			<PageHero
-				eyebrow="About Dabel · Since 2013"
-				title="Building a legacy"
-				accent="on the water."
-				body="A decade of reliable, efficient and sustainable operations for the energy and maritime sectors of the Niger Delta."
-				image="/images/tanker.jpg"
+				eyebrow={c.eyebrow}
+				title={c.title}
+				accent={c.accent}
+				body={c.body}
+				image={c.image}
 				crumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
 			/>
 			<CompanyOverview />
-			<ValuesSection />
+			<ValuesSection values={values} showImages={false} />
 			<LegacySection />
 			<FounderSection />
 			<LeadershipTeam />

@@ -1,8 +1,9 @@
+import { withInvalidate } from "@/lib/admin-route";
 import { NextResponse } from "next/server";
 import { verifyAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function DELETE(
+async function DELETEHandler(
 	_request: Request,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -24,3 +25,5 @@ export async function DELETE(
 		);
 	}
 }
+
+export const DELETE = withInvalidate(DELETEHandler);

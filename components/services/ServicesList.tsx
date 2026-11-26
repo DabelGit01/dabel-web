@@ -60,7 +60,7 @@ export function ServicesList() {
 				) : (
 					<div className="space-y-8">
 						{shown.map((s, i) => {
-							const href = fromAdmin ? `/services/${s.slug}` : `/contact?subject=${encodeURIComponent(s.name)}`;
+							const href = fromAdmin ? `/offers/${s.slug}` : `/contact?subject=${encodeURIComponent(s.name)}`;
 							return (
 								<Reveal
 									key={s.slug}
@@ -100,7 +100,7 @@ export function ServicesList() {
 												href={href}
 												className="inline-flex min-h-12 items-center gap-2.5 rounded-full bg-navy px-6 text-[15px] font-semibold text-white transition hover:bg-indigo dark:bg-white dark:text-navy dark:hover:bg-brand"
 											>
-												{fromAdmin ? "View service" : "Enquire"}
+												{fromAdmin ? "View offer" : "Enquire"}
 												<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
 											</Link>
 										</div>

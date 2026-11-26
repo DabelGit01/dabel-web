@@ -1,3 +1,4 @@
+import { withInvalidate } from "@/lib/admin-route";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { verifyAuth } from "@/lib/auth";
@@ -26,7 +27,7 @@ export async function GET() {
 	}
 }
 
-export async function POST(request: Request) {
+async function POSTHandler(request: Request) {
 	if (!(await verifyAuth("/admin/blog"))) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
@@ -68,3 +69,5 @@ export async function POST(request: Request) {
 		);
 	}
 }
+
+export const POST = withInvalidate(POSTHandler);

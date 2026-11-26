@@ -1,12 +1,14 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import { useContent } from "@/components/site/ContentProvider";
 import { PostCard } from "@/components/site/PostCard";
 import { ButtonLink, Reveal, SectionHeading, Skeleton } from "@/components/site/primitives";
 import { useApi } from "@/hooks/use-api";
 import type { BlogPost } from "@/lib/types";
 
 export function InsightsTeaser() {
+	const c = useContent("homeInsights");
 	const { data, loading } = useApi<BlogPost[]>("/api/public/blog");
 	const posts = (data ?? []).filter((p) => p.published).slice(0, 3);
 
@@ -16,10 +18,12 @@ export function InsightsTeaser() {
 		<section className="bg-bg py-24 sm:py-32">
 			<div className="container-x">
 				<div className="flex flex-wrap items-end justify-between gap-8">
-					<SectionHeading title="Insights" subtitle="News & Updates" intro="Operations updates, safety notes and industry news from the Dabel team." />
-					<ButtonLink href="/insights" variant="outline">
-						All insights <ArrowRight className="h-4 w-4" />
-					</ButtonLink>
+					<SectionHeading title={c.title} subtitle={c.subtitle} intro={c.intro} />
+					{c.buttonLabel && (
+						<ButtonLink href="/insights" variant="outline">
+							{c.buttonLabel} <ArrowRight className="h-4 w-4" />
+						</ButtonLink>
+					)}
 				</div>
 				<div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 					{loading

@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { HERO_DEFAULTS, VALUE_DEFAULTS } from "../lib/content";
 import { prisma } from "../lib/prisma";
 
 /**
@@ -128,6 +129,27 @@ async function main() {
 		});
 		console.log("  ✓ blog categories");
 	}
+
+	if ((await prisma.heroSlide.count()) === 0) {
+		for (const [order, s] of HERO_DEFAULTS.entries()) {
+			await prisma.heroSlide.create({ data: { ...s, order } });
+		}
+		console.log("  ✓ hero slides");
+	}
+
+	if ((await prisma.coreValue.count()) === 0) {
+		for (const [order, v] of VALUE_DEFAULTS.entries()) {
+			await prisma.coreValue.create({ data: { ...v, order } });
+		}
+		console.log("  ✓ values");
+	}
+
+	// added after first launch — upsert so existing databases get it too
+	await prisma.permission.upsert({
+		where: { path: "/admin/content" },
+		update: {},
+		create: { name: "Page Content", path: "/admin/content" },
+	});
 
 	if ((await prisma.permission.count()) === 0) {
 		await prisma.permission.createMany({
